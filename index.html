@@ -1,0 +1,214 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    <style>
+        .item {
+            float: left;
+            margin: 5px;
+            padding: 5px;
+            min-width: 20px;
+            border: 1px solid #000;
+        }
+
+        .header {
+            border-bottom: 1px dotted #000;
+        }
+
+        .item-row {
+            margin-top: 5px;
+        }
+
+        .header {
+            height: 40px;
+            border-bottom: 3px solid #5C6F7D;
+            background: #FFF;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .header ul {
+            list-style: none outside none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header ul li {
+            float: left;
+            display: inline-block;
+            position: relative;
+            margin-left: 5px;
+            margin-top: 5px;
+            padding: 3px 5px;
+            color: #fff;
+            background-color: #5C6F7D;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .header ul li a {
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .header ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .hide {
+            display: none;
+        }
+
+    </style>
+
+    <script>
+
+        var Numeric = {};
+
+        $(document).ready(function () {
+            Numeric.container = $("#container");
+            Numeric.item_temp = _.template($('#item-template').html());
+            Numeric.row_temp = _.template($('#item-row').html());
+
+            Numeric["clear"] = function() {
+                this.container.html("");
+            }
+
+            Numeric["power_of_2"] = function (from, to) {
+                this.clear();
+                while (from <= to) {
+                    var item_id = from;
+                    var header = "2<sup><i>" + from + "</i></sup>";
+
+                    var item_data = this.item_temp({ header:header, _id:from });
+                    var row_data = this.row_temp({ row:Math.pow(2, from) });
+
+                    this.container.append(item_data);
+                    $("#" + item_id).append(row_data);
+
+                    from++;
+                }
+            }
+
+            Numeric["square"] = function (from, to) {
+                this.clear();
+                while (from <= to) {
+
+                    var item_id = from;
+                    var header = from + " x " + from;
+
+                    var item_data = this.item_temp({ header:header, _id:from });
+                    var row_data = this.row_temp({ row:from * from });
+
+                    this.container.append(item_data);
+                    $("#" + item_id).append(row_data);
+
+                    from++;
+                }
+            }
+
+            Numeric["cube"] = function (from, to) {
+                this.clear();
+                while (from <= to) {
+
+                    var item_id = from;
+                    var header = from + " x " + from + " x " + from;
+
+                    var item_data = this.item_temp({ header:header, _id:from });
+                    var row_data = this.row_temp({ row:from * from * from });
+
+                    this.container.append(item_data);
+                    $("#" + item_id).append(row_data);
+
+                    from++;
+                }
+            }
+
+            Numeric["percent_of_1_by_x"] = function (from, to) {
+                this.clear();
+                while (from <= to) {
+
+                    var item_id = from;
+                    var header = " 1 / " + from;
+
+                    var item_data = this.item_temp({ header:header, _id:from });
+                    var row_data = this.row_temp({ row:(((1.0 / from) * 100).toFixed(2)) + " % " });
+
+                    this.container.append(item_data);
+                    $("#" + item_id).append(row_data);
+
+                    from++;
+                }
+            }
+
+            Numeric["multiplication_table"] = function (from, to, depth_from, depth_to) {
+                this.clear();
+                while (from <= to) {
+
+                    var item_id = from;
+                    var header = from;
+
+                    var item_data = this.item_temp({ header:header, _id:from });
+
+                    this.container.append(item_data);
+                    var item = $("#" + item_id);
+
+
+                    for(var i= depth_from; i<= depth_to; i++) {
+                        var row_data = this.row_temp({ row: from + " x "  + i + " = " + from * i });
+                        item.append(row_data);
+                    }
+
+                    from++;
+                }
+            }
+
+
+            $(".header").show();
+        });
+    </script>
+</head>
+<body>
+
+<div class="header hide">
+    <ul>
+        <li>
+          <a href="javascript:Numeric.power_of_2(2, 12)">Power of 2</a>
+        </li>
+        <li>
+            <a href="javascript:Numeric.square(2, 25)">Square</a>
+        </li>
+        <li>
+            <a href="javascript:Numeric.cube(2, 25)">Cube</a>
+        </li>
+        <li>
+            <a href="javascript:Numeric.percent_of_1_by_x(2, 25)">Percent of  1 / X</a>
+        </li>
+        <li>
+            <a href="javascript:Numeric.multiplication_table(2, 25, 1, 20)">Multiplication Table</a>
+        </li>
+    </ul>
+</div>
+
+<div id="container">
+</div>
+
+<script type="text/template" id="item-template">
+    <div class="item" id="<%=_id%>">
+        <div class="header">
+            <%= header %>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="item-row">
+    <div class="item-row">
+        <%= row %>
+    </div>
+</script>
+</body>
+</html>
